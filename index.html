@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BLE Explorer</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="header">
+        <h1>BLE Explorer</h1>
+        <button id="checkGattBtn" class="btn-primary" style="margin-bottom: 1em; float: right;">Check GATT</button>
+        <p class="subtitle">Real-time insights for BLE Device Monitoring  - (experimental some functionality may not be fully stable)</p>
+        <p class="version" style="margin: 0; padding: 0; font-size: 0.9em; color: #888; font-style: italic;">v1.1.2</p>
+      </div>
+      <div class="container">
+        <div class="controls-section">
+          <button id="pickDeviceBtn" class="btn-pick-device">
+            <span class="btn-icon">🎯</span>
+            Pick Advertising Hearing Aid from list
+          </button>
+          <button id="connectAllBtn" class="btn-connect-all">
+            <span class="btn-icon">📊</span>
+            Infographic
+          </button>
+                  <!-- Infographic Modal Overlay -->
+                  <div id="infographicModal" class="modal-overlay" style="display:none;">
+                    <div class="modal-content">
+                      <button id="closeInfographicBtn" class="btn-close" style="float:right;font-size:1.5em;">✕</button>
+                      <img src="infographic.png" alt="Infographic" style="max-width:90vw;max-height:80vh;display:block;margin:0 auto;" />
+                    </div>
+                  </div>
+          <button id="disconnectBtn" class="btn-secondary">
+            <span class="btn-icon">▶️</span>
+            Let me tell a story
+          </button>
+                  <!-- Media Modal Overlay -->
+                  <div id="mediaModal" class="modal-overlay" style="display:none;">
+                    <div class="modal-content">
+                      <button id="closeMediaBtn" class="btn-close" style="float:right;font-size:1.5em;">✕</button>
+                      <video id="mediaPlayer" controls style="max-width:90vw;max-height:80vh;display:block;margin:0 auto;">
+                        <source src="/Build_an_App_with_Zero_Code.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+          <button id="showDiagnosticsBtn" class="btn-secondary">
+            <span class="btn-icon">🕵️‍♀️</span>
+            Laptop setup check
+          </button>
+          <button id="exportToSheetsBtn" class="btn-secondary">
+            <span class="btn-icon">📊</span>
+            Export to Sheets
+          </button>
+          <button id="downloadCsvBtn" class="btn-secondary">
+            <span class="btn-icon">💾</span>
+            Download CSV
+          </button>
+        </div>
+        <div id="diagnosticsPanel" class="diagnostics-panel" style="display: none;">
+          <div class="diagnostics-header">
+            <h3>🔍 Browser Diagnostics</h3>
+            <button id="closeDiagnosticsBtn" class="btn-close">✕</button>
+          </div>
+          <div id="diagnosticsContent" class="diagnostics-content"></div>
+        </div>
+        <!-- HA Health Inspection Card -->
+        <div class="device-card ha-health-card" style="display:block;width:100%;margin-bottom:32px;">
+          <div class="card-header">
+            <h2>🕵️‍♀️ Hearing Aid Health Inspection and Recommendations</h2>
+            <div class="card-top-actions" style="margin-top: 0.5em; display: flex; gap: 0.5em;">
+              <button id="runHealthInspectionBtn" class="btn-primary">
+                <span class="btn-icon">🩺</span>
+                Manually trigger Inspection
+              </button>
+            </div>
+          </div>
+          <div class="device-details">
+            <div class="device-name">Health Inspection for ....</div>
+            <div class="device-id"><span id="healthInspectionDeviceInfo">---</span></div>
+            <div class="device-timestamp" id="healthInspectionTimestamp">Last run: --:--:--</div>
+          </div>
+          <div id="healthInspectionResults" class="inspection-results-grid"></div>
+                    <div class="info-row">
+                      <span class="info-label"></span>
+                      <span class="info-value" id="healthInspectionStatus"></span>
+                    </div>
+          </div>
+          <!-- info-section removed as requested -->
+        </div>
+        <div class="device-filter-section" id="deviceFilterSection">
+          <h3>🔎 Scan for Hearing Aid Manufacturers</h3>
+          <p class="filter-hint">Select which manufacturers to include in the scan. Only devices from checked manufacturers will be discovered.</p>
+          <div class="filter-controls">
+            <div class="manufacturer-filter-grid">
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x01E0" id="mfg_widex" checked>
+                <span class="manufacturer-name">Widex</span>
+                <span class="manufacturer-id">0x01E0</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x000D" id="mfg_gn">
+                <span class="manufacturer-name">GN Hearing</span>
+                <span class="manufacturer-id">0x000D</span>
+                <span class="manufacturer-note">GN ReSound</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x004B" id="mfg_starkey">
+                <span class="manufacturer-name">Starkey</span>
+                <span class="manufacturer-id">0x004B</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x0292" id="mfg_sonova">
+                <span class="manufacturer-name">Sonova</span>
+                <span class="manufacturer-id">0x0292</span>
+                <span class="manufacturer-note">Phonak, Unitron</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x0295" id="mfg_sivantos">
+                <span class="manufacturer-name">Sivantos/Signia</span>
+                <span class="manufacturer-id">0x0295</span>
+                <span class="manufacturer-note">Formerly Siemens</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x0210" id="mfg_oticon">
+                <span class="manufacturer-name">Oticon</span>
+                <span class="manufacturer-id">0x0210</span>
+                <span class="manufacturer-note">Demant</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x0048" id="mfg_cochlear">
+                <span class="manufacturer-name">Cochlear</span>
+                <span class="manufacturer-id">0x0048</span>
+                <span class="manufacturer-note">Implant</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x01E5" id="mfg_beltone">
+                <span class="manufacturer-name">Beltone</span>
+                <span class="manufacturer-id">0x01E5</span>
+                <span class="manufacturer-note">GN Hearing subsidiary</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x021A" id="mfg_bernafon">
+                <span class="manufacturer-name">Bernafon</span>
+                <span class="manufacturer-id">0x021A</span>
+                <span class="manufacturer-note">Demant group</span>
+              </label>
+              <label class="manufacturer-checkbox">
+                <input type="checkbox" name="manufacturer" value="0x011C" id="mfg_starkey_fr">
+                <span class="manufacturer-name">Starkey France</span>
+                <span class="manufacturer-id">0x011C</span>
+              </label>
+            </div>
+            <div class="filter-actions">
+              <button id="selectAllMfgBtn" class="btn-filter-action">✅ Select All</button>
+              <button id="deselectAllMfgBtn" class="btn-filter-action">❌ Deselect All</button>
+            </div>
+            <div class="filter-status" id="filterStatus"></div>
+          </div>
+        </div>
+        <div id="gattExplorerPanel" class="gatt-explorer-panel">
+          <div class="card-header">
+            <h3>🔍 GATT Services Explorer</h3>
+            <button id="closeGattExplorerBtn" class="btn-close">✕</button>
+          </div>
+          <div class="gatt-device-info-grid">
+            <div class="info-row">
+              <span class="info-label">Device Name:</span>
+              <span class="info-value" id="gattDeviceName">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Device ID:</span>
+              <span class="info-value" id="gattDeviceId">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Adapter:</span>
+              <span class="info-value" id="gattDeviceAdapter">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Signal Strength:</span>
+              <span class="info-value" id="gattSignal">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Manufacturer:</span>
+              <span class="info-value" id="gattManufacturer">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Model:</span>
+              <span class="info-value" id="gattModel">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Firmware:</span>
+              <span class="info-value" id="gattFirmware">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Hardware:</span>
+              <span class="info-value" id="gattHardware">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Battery Level:</span>
+              <span class="info-value" id="gattBattery">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Services Count:</span>
+              <span class="info-value" id="gattServicesList">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Connection Status:</span>
+              <span class="info-value" id="gattConnectionStatus">Disconnected</span>
+            </div>
+          </div>
+          <div class="gatt-actions">
+            <button id="connectGattBtn" class="btn-primary">🔗 Connect GATT</button>
+            <button id="disconnectGattBtn" class="btn-secondary" disabled>🔌 Disconnect</button>
+            <button id="discoverServicesBtn" class="btn-primary" disabled>🔍 Discover Services</button>
+            <button id="readAllBtn" class="btn-primary">📖 Read All</button>
+          </div>
+          <div id="gattServicesContainer" class="gatt-services-container"></div>
+        </div>
+        <!-- GATT Services Table Card -->
+        <div id="gattTablePanel" class="gatt-table-panel" style="display: none;">
+          <div class="card-header">
+            <h3>📊 GATT Services & Characteristics Table</h3>
+            <button id="closeGattTableBtn" class="btn-close">✕</button>
+          </div>
+          <div style="margin: 1em 0; text-align: center;">
+            <button id="populateGattTableBtn" class="btn-primary" style="padding: 10px 20px; font-size: 1em;">
+              📊 Populate Data
+            </button>
+            <button id="debugGattTableBtn" class="btn-secondary" style="padding: 10px 20px; font-size: 1em; margin-left: 10px;">
+              🐞 Debug
+            </button>
+          </div>
+          <div class="gatt-table-container" style="max-height: 500px; overflow-y: auto; overflow-x: auto; margin-top: 1em;">
+            <table id="gattDataTable" style="width: 100%; border-collapse: collapse; font-size: 0.9em; table-layout: auto; min-width: 1200px;">
+              <thead style="position: sticky; top: 0; background: #f5f5f5; z-index: 10;">
+                <tr>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">UUID Service</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">UUID Characteristic</th>
+                  <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Value</th>
+                </tr>
+              </thead>
+              <tbody id="gattDataTableBody">
+                <tr>
+                  <td colspan="4" style="border: 1px solid #ddd; padding: 12px; text-align: center; color: #888;">
+                    No data available. Connect to a device and discover services.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="troubleshooting-panel" id="troubleshootingPanel" style="display: none;">
+          <div class="troubleshooting-icon">⚠️</div>
+          <div class="troubleshooting-content">
+            <strong>Bluetooth Adapter Not Available</strong>
+            <p>Please check the following:</p>
+            <ol>
+              <li><strong>Turn ON Bluetooth</strong> - Go to Windows Settings → Bluetooth & devices → Turn Bluetooth ON</li>
+              <li><strong>Check Device Manager</strong> - Ensure Bluetooth adapter is enabled and driver is installed</li>
+              <li><strong>Restart Browser</strong> - Close ALL Chrome/Edge windows and reopen</li>
+              <li><strong>Grant Permissions</strong> - Check browser site settings allow Bluetooth access</li>
+              <li><strong>Try Edge Browser</strong> - Microsoft Edge has better Windows 11 Bluetooth integration</li>
+            </ol>
+            <button id="retryBtn" class="btn-retry">🔄 Try Again</button>
+          </div>
+        </div>
+        <div class="devices-grid">
+          <!-- Widex Charger Monitor Card -->
+          <div class="device-card charger-device">
+            <div class="card-header">
+              <h2>Widex Charger Monitor</h2>
+              <div class="card-top-actions" style="margin-top: 0.5em; display: flex; gap: 0.5em;">
+                <button id="connectChargerBtn" class="btn-connect">
+                  <span class="btn-icon">🔌</span>
+                  Connect Charger
+                </button>
+                <button id="refreshChargerBtn" class="btn-secondary" disabled>
+                  <span class="btn-icon">🔄</span>
+                  Refresh Status
+                </button>
+                <button id="clearChargerErrorBtn" class="btn-secondary" disabled>
+                  <span class="btn-icon">🧹</span>
+                  Clear Error Log
+                </button>
+              </div>
+            </div>
+            <div class="device-details">
+              <div class="device-name" id="chargerDeviceName">No charger connected</div>
+              <div class="device-id" id="chargerDeviceId">ID: ---</div>
+              <div class="device-timestamp" id="chargerTimestamp">Last updated: --:--:--</div>
+            </div>
+            <div class="info-section">
+              <h3>🔌 Charger Information</h3>
+              <div class="info-row">
+                <span class="info-label">Firmware Version:</span>
+                <span class="info-value" id="chargerFirmware">---</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Hardware Version:</span>
+                <span class="info-value" id="chargerHardware">---</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value" id="chargerStatus">---</span>
+              </div>
+            </div>
+            <div class="charger-errors" id="chargerErrorsSection" style="display: none;">
+              <h3>⚠️ Charger System Errors</h3>
+              <div class="error-grid">
+                <div class="error-item">
+                  <span class="error-label">VIN High Error:</span>
+                  <span class="error-value" id="chargerVinHighError">0</span>
+                </div>
+                <div class="error-item">
+                  <span class="error-label">VIN Low Error:</span>
+                  <span class="error-value" id="chargerVinLowError">0</span>
+                </div>
+                <div class="error-item">
+                  <span class="error-label">Init Error:</span>
+                  <span class="error-value" id="chargerInitError">0</span>
+                </div>
+                <div class="error-item">
+                  <span class="error-label">Coil Temp Low Error:</span>
+                  <span class="error-value" id="chargerCoilTempLowError">0</span>
+                </div>
+              </div>
+                <!-- Removed duplicate Clear Error Log button -->
+            </div>
+            <!-- Charging Slots Grid -->
+            <div class="charging-slots-grid">
+              <!-- Slot 1 -->
+              <div class="charging-slot-section">
+                <h3>🔋 Charging Slot 1</h3>
+                <div class="slot-status" id="chargerSlot1Status">
+                  <span class="status-badge" id="chargerSlot1StatusBadge">Empty</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Battery Voltage:</span>
+                  <span class="info-value voltage-display" id="chargerSlot1Voltage">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Battery Current:</span>
+                  <span class="info-value" id="chargerSlot1Current">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Battery Temperature:</span>
+                  <span class="info-value" id="chargerSlot1Temp">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Charge Cycles:</span>
+                  <span class="info-value" id="chargerSlot1Cycles">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Production Date:</span>
+                  <span class="info-value" id="chargerSlot1ProdDate">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">IC Number:</span>
+                  <span class="info-value" id="chargerSlot1IcNo">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fast Charge:</span>
+                  <span class="info-value" id="chargerSlot1FastCharge">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Normal End:</span>
+                  <span class="info-value" id="chargerSlot1NormalEnd">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Raw Buffer:</span>
+                  <span class="info-value" id="chargerSlot1RawBuffer" style="font-family:monospace;font-size:0.9em;">---</span>
+                </div>
+                <div class="slot-errors" id="chargerSlot1Errors" style="display: none;">
+                  <div class="error-badge-container" id="chargerSlot1ErrorBadges"></div>
+                </div>
+              </div>
+              <!-- Slot 2 -->
+              <div class="charging-slot-section">
+                <h3>🔋 Charging Slot 2</h3>
+                <div class="slot-status" id="chargerSlot2Status">
+                  <span class="status-badge" id="chargerSlot2StatusBadge">Empty</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Battery Voltage:</span>
+                  <span class="info-value voltage-display" id="chargerSlot2Voltage">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Battery Current:</span>
+                  <span class="info-value" id="chargerSlot2Current">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Battery Temperature:</span>
+                  <span class="info-value" id="chargerSlot2Temp">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Charge Cycles:</span>
+                  <span class="info-value" id="chargerSlot2Cycles">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Production Date:</span>
+                  <span class="info-value" id="chargerSlot2ProdDate">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">IC Number:</span>
+                  <span class="info-value" id="chargerSlot2IcNo">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Fast Charge:</span>
+                  <span class="info-value" id="chargerSlot2FastCharge">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Normal End:</span>
+                  <span class="info-value" id="chargerSlot2NormalEnd">---</span>
+                </div>
+                <div class="info-row">
+                  <span class="info-label">Raw Buffer:</span>
+                  <span class="info-value" id="chargerSlot2RawBuffer" style="font-family:monospace;font-size:0.9em;">---</span>
+                </div>
+                <div class="slot-errors" id="chargerSlot2Errors" style="display: none;">
+                  <div class="error-badge-container" id="chargerSlot2ErrorBadges"></div>
+                </div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <div class="polling-config">
+                <label for="chargerPollingDelay" class="polling-label">
+                  ⏱️ Auto-Refresh Interval (seconds):
+                </label>
+                <input 
+                  type="number" 
+                  id="chargerPollingDelay" 
+                  class="polling-input" 
+                  value="30" 
+                  min="0" 
+                  max="300" 
+                  step="1"
+                  title="Set to 0 to disable automatic refresh"
+                />
+                <span class="polling-hint">0 = disabled</span>
+              </div>
+              <button id="sendChargerDataBtn" class="btn-send-data" disabled>
+                <span class="btn-icon">📤</span>
+                Send Data to API
+              </button>
+            </div>
+          </div>
+        <div class="config-section">
+          <label for="restEndpoint">REST Endpoint URL:</label>
+          <input 
+            type="url" 
+            id="restEndpoint" 
+            placeholder="https://apimgmt.wsa.com/datacollection/v3/api/DataCollectionGen2/AnalyticalData/PostData" 
+            value="https://apimgmt.wsa.com/datacollection/v3/api/DataCollectionGen2/AnalyticalData/PostData"
+          />
+        </div>
+        <div class="config-section">
+          <label for="googleSheetsUrl">Google Sheets Web App URL:</label>
+          <input 
+            type="url" 
+            id="googleSheetsUrl" 
+            placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" 
+            value="https://script.google.com/macros/s/AKfycby9NBXVThzGuH0ZNPswiYE3c1Mv4AgNzTdxVIdSwXToMg2nYD70qT0RTf1VbxC8qNDw/exec"
+          />
+          <small style="color: #666; font-size: 0.85em;">See <a href="google-sheets-guide.html" target="_blank">integration guide</a> for setup</small>
+        </div>
+        <div class="log-container">
+          <h2>Activity Log</h2>
+          <div id="log" class="log-box"></div>
+        </div>
+      </div>
+    </div>
+    <!-- External Activity Modal -->
+    <div id="externalActivityModal" class="modal-overlay" style="display:none;z-index:9999;">
+      <div class="modal-content" style="position:relative;padding:0;width:640px;height:480px;min-width:320px;min-height:200px;max-width:95vw;max-height:90vh;resize:both;overflow:auto;">
+            <button id="closeExternalActivityBtn" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:2em; color:#333; cursor:pointer; z-index:10;">&times;</button>
+            <iframe id="externalActivityFrame" src="" style="flex:1; border:none; border-radius:0 0 12px 12px; width:100%; height:100%; min-width:320px; min-height:200px; background:#fafbfc; display:block;"></iframe>
+          <div id="externalActivityResizeHandle" style="position:absolute; right:0; bottom:0; width:28px; height:28px; cursor:se-resize; z-index:20; background:transparent; display:flex; align-items:flex-end; justify-content:flex-end;">
+            <svg width="24" height="24" viewBox="0 0 24 24" style="opacity:0.5;"><path d="M4 20h16M8 16h12M12 12h8" stroke="#888" stroke-width="2" fill="none"/></svg>
+          </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

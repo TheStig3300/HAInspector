@@ -1,0 +1,33 @@
+# Node modules
+node_modules/
+
+# Build output
+/dist/
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Media files
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Env files
+.env
+
+# IDE files
+.vscode/
+.idea/
+.vercel
+.env*.local

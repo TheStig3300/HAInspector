@@ -77,22 +77,49 @@
   clear: both;
 }
 :root {
-  --primary-blue: #2563eb;
-  --primary-purple: #9333ea;
-  --left-bg: #dbeafe;
-  --left-border: #93c5fd;
-  --right-bg: #f3e8ff;
-  --right-border: #d8b4fe;
-  --success-color: #22c55e;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
-  --card-bg: #ffffff;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
+  /* Theme Colors from palette image */
+  --theme-white: #ffffff;
+  --theme-gray-1: #f3f3f3;
+  --theme-gray-2: #d9d9d9;
+  --theme-gray-3: #bfbfbf;
+  --theme-gray-4: #8c8c8c;
+  --theme-gray-5: #595959;
+  --theme-blue: #4f4fff;
+  --theme-red: #ff5c5c;
+  --theme-cyan: #2ee6e6;
+  --theme-teal: #2ed6c9;
+  --theme-orange: #ff9900;
+  --theme-purple: #2e0066;
+  --theme-dark: #222222;
+  --theme-light: #f9f9f9;
+  /* Additional palette shades (vertical columns) */
+  --theme-blue-dark: #2e2e99;
+  --theme-blue-light: #b3b3ff;
+  --theme-red-dark: #b30000;
+  --theme-red-light: #ffb3b3;
+  --theme-cyan-dark: #008080;
+  --theme-cyan-light: #b3ffff;
+  --theme-orange-dark: #b36b00;
+  --theme-orange-light: #ffd699;
+  --theme-purple-light: #b3a1d6;
+  --theme-purple-dark: #1a0033;
+  /* Semantic aliases for app usage */
+  --primary-blue: var(--theme-blue);
+  --primary-purple: var(--theme-purple);
+  --success-color: var(--theme-cyan);
+  --warning-color: var(--theme-orange);
+  --error-color: var(--theme-red);
+  --bg-gradient: linear-gradient(135deg, var(--theme-blue-light) 0%, var(--theme-purple-light) 100%);
+  --card-bg: var(--theme-white);
+  --text-primary: var(--theme-dark);
+  --text-secondary: var(--theme-gray-4);
   --border-radius: 16px;
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --left-bg: var(--theme-blue-light);
+  --left-border: var(--theme-blue);
+  --right-bg: var(--theme-purple-light);
+  --right-border: var(--theme-purple);
 }
 
 * {
@@ -298,179 +325,6 @@ button {
   color: white;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background: #1d4ed8;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.btn-secondary {
-  background: #64748b;
-  color: white;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: #475569;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.btn-action {
-  background: var(--primary-blue);
-  color: white;
-  width: 100%;
-  justify-content: center;
-  padding: 16px 28px;
-  font-size: 16px;
-  border-radius: 50px;
-}
-
-.btn-action:hover:not(:disabled) {
-  background: #1d4ed8;
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Send Data Button */
-.btn-send-data {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  color: white;
-  width: 100%;
-  padding: 14px 24px;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
-}
-
-.btn-send-data:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-}
-
-.btn-send-data:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-send-data:disabled {
-  background: #cbd5e1;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* Card Actions Container */
-.card-actions {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid #e2e8f0;
-}
-
-/* Scan Instructions */
-.scan-instructions {
-  display: flex;
-  gap: 15px;
-  align-items: flex-start;
-  margin-bottom: 25px;
-  padding: 20px;
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #fbbf24;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow);
-}
-
-.instruction-icon {
-  font-size: 2rem;
-  flex-shrink: 0;
-}
-
-.instruction-text {
-  color: #78350f;
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.instruction-text strong {
-  color: #92400e;
-  display: block;
-  margin-bottom: 5px;
-}
-
-/* Troubleshooting Panel */
-.troubleshooting-panel {
-  display: flex;
-  gap: 15px;
-  align-items: flex-start;
-  margin-bottom: 25px;
-  padding: 25px;
-  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-  border: 2px solid var(--error-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-lg);
-}
-
-.troubleshooting-icon {
-  font-size: 2.5rem;
-  flex-shrink: 0;
-}
-
-.troubleshooting-content {
-  flex: 1;
-  color: #7f1d1d;
-}
-
-.troubleshooting-content strong {
-  display: block;
-  font-size: 1.1rem;
-  color: #991b1b;
-  margin-bottom: 10px;
-}
-
-.troubleshooting-content p {
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.troubleshooting-content ol {
-  margin-left: 20px;
-  margin-bottom: 15px;
-}
-
-.troubleshooting-content li {
-  margin-bottom: 8px;
-  line-height: 1.6;
-}
-
-.troubleshooting-content li strong {
-  display: inline;
-  font-size: inherit;
-  color: #991b1b;
-}
-
-.btn-retry {
-  background: var(--error-color);
-  color: white;
-  padding: 10px 20px;
-  margin-top: 10px;
-  box-shadow: var(--shadow);
-}
-
-.btn-retry:hover {
-  background: #dc2626;
-  transform: translateY(-2px);
-}
 
 /* Device Filter Section */
 .device-filter-section {

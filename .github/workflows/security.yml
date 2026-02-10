@@ -1,0 +1,163 @@
+name: Security & Code Quality
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  schedule:
+    # Run security scans weekly on Monday at 9 AM UTC
+    - cron: '0 9 * * 1'
+
+jobs:
+  code-quality:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for console.log statements
+        run: |
+          echo "Checking for console.log statements in production code..."
+          if grep -r "console\.(log|debug|trace)" src/ --exclude-dir=node_modules --include="*.js" --include="*.mjs" | grep -v "console.error" | grep -v "console.warn"; then
+            echo "⚠️ Found console.log/debug/trace statements - consider removing for production"
+            # Don't fail, just warn
+          else
+            echo "✅ No problematic console statements found"
+          fi
+
+      - name: Check for TODO/FIXME comments
+        run: |
+          echo "Checking for TODO/FIXME comments..."
+          if grep -r "TODO\|FIXME" src/ --exclude-dir=node_modules --include="*.js" --include="*.mjs" --include="*.html" --include="*.css"; then
+            echo "📝 Found TODO/FIXME comments - track these in issues"
+          else
+            echo "✅ No TODO/FIXME comments found"
+          fi
+
+      - name: Check file sizes
+        run: |
+          echo "Checking for large files..."
+          find src -type f -size +100k -exec ls -lh {} \; || echo "✅ No large files found"
+
+  security-scan:
+    name: Security Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run npm audit
+        run: |
+          npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found - review npm audit output"
+
+      - name: Check for hardcoded secrets
+        run: |
+          echo "Checking for potential hardcoded secrets..."
+          # Check for common secret patterns
+          if grep -r -E "(password|secret|api_key|apikey|token|private_key).*=.*['\"]" src/ --exclude-dir=node_modules --include="*.js" --include="*.mjs" | grep -v "// " | grep -v "example" | grep -v "placeholder"; then
+            echo "⚠️ Found potential hardcoded secrets - review these carefully"
+          else
+            echo "✅ No obvious hardcoded secrets found"
+          fi
+
+  build-size-check:
+    name: Build Size Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Analyze bundle size
+        run: |
+          echo "### 📦 Build Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Get total size
+          total_size=$(du -sh dist/ | cut -f1)
+          echo "**Total Build Size:** $total_size" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # List files by size
+          echo "**Largest Files:**" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          du -ah dist/ | sort -rh | head -20 >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Check if build is too large (warn if > 5MB)
+          size_bytes=$(du -sb dist/ | cut -f1)
+          if [ "$size_bytes" -gt 5242880 ]; then
+            echo "⚠️ **Warning:** Build size exceeds 5MB. Consider code splitting or optimization." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ **Build size is reasonable**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  browser-compatibility:
+    name: Browser Compatibility Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for modern JavaScript features
+        run: |
+          echo "### 🌐 Browser Compatibility Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          echo "**Required Browser APIs:**" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Web Bluetooth API (Chrome 89+, Edge 89+, Opera 76+)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Web Serial API (Chrome 89+, Edge 89+, Opera 76+)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ ES Modules (All modern browsers)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Check for async/await usage
+          if grep -r "async\|await" src/ --include="*.js" --include="*.mjs" > /dev/null; then
+            echo "- ✅ Uses async/await (requires modern browsers)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Check for fetch API
+          if grep -r "fetch(" src/ --include="*.js" --include="*.mjs" > /dev/null; then
+            echo "- ✅ Uses Fetch API (all modern browsers)" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Minimum Browser Requirements:** Chrome/Edge 89+, Opera 76+" >> $GITHUB_STEP_SUMMARY

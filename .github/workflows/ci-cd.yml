@@ -112,5 +112,6 @@ jobs:
           echo "### 🚀 Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ **Status:** Deployed successfully" >> $GITHUB_STEP_SUMMARY
-          echo "🌐 **URL:** https://bleexplorer.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **URL:** https://hainspector.vercel.app" >> $GITHUB_STEP_SUMMARY
           echo "📅 **Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "📦 **Version:** $(node -p "require('./package.json').version")" >> $GITHUB_STEP_SUMMARY

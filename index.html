@@ -4,28 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BLE Explorer</title>
+    <title>🕵️‍♀️ WSA HA Inspector</title>
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
     <div id="app">
       <div class="header">
-        <h1>HA Inspector</h1>
+        <h1>🕵️‍♀️ WSA HA Inspector</h1>
         <p class="subtitle">Hearing Aid Health Inspection and Recommendations</p>
         <p class="version" style="margin: 0; padding: 0; font-size: 0.9em; color: #888; font-style: italic;">v1.1.2</p>
       </div>
       <div class="container">
         <div class="controls-section">
           <button id="pickDeviceBtn" class="btn-pick-device">
-              <span class="btn-icon">🎯</span>
-              Pick Advertising Hearing Aid from list
-            </button>
+            <span class="btn-icon">🎯</span>
+            Pair to advertising Hearing Aid from list
+          </button>
           <script type="module" src="/src/main.mjs"></script>
         </div>
         <!-- HA Health Inspection Card -->
         <div class="device-card ha-health-card" style="display:block;width:100%;margin-bottom:32px;">
           <div class="card-header">
-            <h2>🕵️‍♀️ Hearing Aid Health Inspection and Recommendations</h2>
+            <h2>🕵️‍♀️Hearing Aid Health Inspection and 💡Recommendations</h2>
           </div>
           <div class="device-details">
             <div class="device-name">Health Inspection for ....</div>
@@ -36,6 +36,51 @@
           <div class="info-row">
             <span class="info-label"></span>
             <span class="info-value" id="healthInspectionStatus"></span>
+          </div>
+        </div>
+
+        <!-- HALog Display Card -->
+        <div class="device-card ha-log-card" style="display:block;width:100%;margin-bottom:32px;">
+          <div class="card-header">
+            <h2>📋 Hearing Aid Persistent Log (HALog)</h2>
+
+            <!-- HALog Controls -->
+            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+              <div style="display: flex; gap: 12px; align-items: center;">
+                <button id="enableLoggingBtn" class="btn-pick-device" style="margin: 0;">
+                  <span class="btn-icon">🔧</span>
+                  Enable Logging
+                </button>
+                <select id="logLevelSelect" style="padding: 12px; border-radius: 8px; border: 2px solid #e5e7eb; font-size: 1rem; background: white; cursor: pointer;">
+                  <option value="0">NONE (Off)</option>
+                  <option value="1">FORCED</option>
+                  <option value="2">FATAL</option>
+                  <option value="3">ERROR</option>
+                  <option value="4">WARNING</option>
+                  <option value="5" selected>INFORMATION (Recommended)</option>
+                  <option value="6">DEBUG</option>
+                </select>
+              </div>
+              <button id="readHALogBtn" class="btn-pick-device" style="margin: 0;">
+                <span class="btn-icon">📋</span>
+                Read HALog from Device
+              </button>
+            </div>
+          </div>
+          <div class="device-details" id="haLogDetailsSection" style="display:none;">
+            <div class="device-name" id="haLogDeviceName">HALog from device...</div>
+            <div class="device-id">
+              <span id="haLogFirmwareVersion">Firmware: --</span> |
+              <span id="haLogFirstId">FirstLogId: --</span> |
+              <span id="haLogDataSize">Size: -- bytes</span>
+            </div>
+            <div class="device-timestamp" id="haLogTimestamp">Last read: --:--:--</div>
+          </div>
+
+          <div id="haLogResults" class="log-entries-container" style="display:none;"></div>
+          <div class="info-row" id="haLogStatusSection" style="display:none;">
+            <span class="info-label">Status:</span>
+            <span class="info-value" id="haLogStatus">Idle</span>
           </div>
         </div>
   </body>

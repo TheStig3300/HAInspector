@@ -1,0 +1,101 @@
+// Found addresses for parameters:
+{
+    'sf_fw_prog_mode': 0x20000524,
+    'f_dlg_bsoh_last_cycle': 0x20002954,
+    'f_dlg_num_e2e_audio_hi_active': 0x2000297c,
+    'f_dlg_num_nfmi_on': null,  // NOT FOUND in spec
+    'f_dlg_time_e2e_audio_hi_active': null,  // NOT FOUND in spec
+    'f_dlg_time_e2e_audio_hi_active_integral': null,  // NOT FOUND in spec
+    'f_dlg_time_nfmi_on': null,  // NOT FOUND in spec
+    'f_dlg_time_nfmi_on_integral': null,  // NOT FOUND in spec
+    'f_sys_hi_type_high': 0x20000134,
+    'f_sys_hi_type_low': 0x2000012c,
+    'f_sys_swver_primary': null,  // NOT FOUND in spec
+    'f_sys_swver_secondary': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_fitting_mode': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_mode1': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_mode2': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_mode3': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_mode4': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_noise': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_quiet': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_speech_in_noise': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_in_speech_quiet': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_microphones_muted': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_music_mode_active': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_remote_microphones_active': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_streaming': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_tcoil_active': null,  // NOT FOUND in spec
+    'sf_ha_stat_num_battery_doors_closed': null,  // NOT FOUND in spec
+    'sf_ha_stat_num_mode_changes': null,  // NOT FOUND in spec
+    'sf_ha_stat_num_power_on': null,  // NOT FOUND in spec
+    'sf_ha_stat_num_vol_changes_dn': null,  // NOT FOUND in spec
+    'sf_ha_stat_num_vol_changes_up': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_noise_reduct_active': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_snr_lt_minus_4': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_snr_lt_minus_8': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_snr_lt_0': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_snr_lt_4': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_snr_lt_8': null,  // NOT FOUND in spec
+    'sf_sp_stat_num_mpo_activations': null,  // NOT FOUND in spec
+    'sf_strm_stat_accum_time_streaming': null,  // NOT FOUND in spec
+    'sf_strm_stat_num_stream_started': null,  // NOT FOUND in spec
+    'f_dlg_abs_cap_fresh': null,  // NOT FOUND in spec
+    'f_dlg_abs_cap_last_cycle': null,  // NOT FOUND in spec
+    'f_dlg_abs_soc': null,  // NOT FOUND in spec
+    'f_dlg_battery_counter': null,  // NOT FOUND in spec
+    'f_dlg_battery_status': null,  // NOT FOUND in spec
+    'f_dlg_bs_initialized': null,  // NOT FOUND in spec
+    'f_dlg_bsoh_fresh': null,  // NOT FOUND in spec
+    'f_dlg_cap_init': null,  // NOT FOUND in spec
+    'f_dlg_days_since_fresh': null,  // NOT FOUND in spec
+    'f_dlg_full_cap': null,  // NOT FOUND in spec
+    'f_dlg_fw_version': null,  // NOT FOUND in spec
+    'f_dlg_model_id': null,  // NOT FOUND in spec
+    'f_dlg_soc_algo_init': null,  // NOT FOUND in spec
+    'f_dlg_soc_last_powerdown': null,  // NOT FOUND in spec
+    'f_dlg_time_battery_ok': null,  // NOT FOUND in spec
+    'f_dlg_time_battery_ok_integral': null,  // NOT FOUND in spec
+    'f_dlg_used_cap': null,  // NOT FOUND in spec
+    'f_dlg_used_cap_last_cycle': null,  // NOT FOUND in spec
+    'f_dlg_version': null,  // NOT FOUND in spec
+    'f_sys_manfid': null,  // NOT FOUND in spec
+    'f_sys_security_level': null,  // NOT FOUND in spec
+    'sf_ha_stat_num_user_interactions': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_compression_active': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_directionality_active': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_feedback_canceller_active': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_hf_noise_gt_40': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_hf_noise_gt_50': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_hf_noise_gt_60': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_hf_noise_gt_70': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_hf_noise_gt_80': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_input_gt_40': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_input_gt_50': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_input_gt_60': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_input_gt_70': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_input_gt_80': null,  // NOT FOUND in spec
+    'sf_sp_stat_num_feedback_canceller_warnings': null,  // NOT FOUND in spec
+    'sf_strm_stat_accum_stream_time_in_mode1': null,  // NOT FOUND in spec
+    'sf_strm_stat_accum_stream_time_in_mode2': null,  // NOT FOUND in spec
+    'sf_strm_stat_accum_stream_time_in_mode3': null,  // NOT FOUND in spec
+    'sf_strm_stat_accum_stream_time_in_mode4': null,  // NOT FOUND in spec
+    'SessionID': null,  // NOT FOUND in spec
+    'ses_date_day': null,  // NOT FOUND in spec
+    'ses_date_month': null,  // NOT FOUND in spec
+    'ses_date_year': null,  // NOT FOUND in spec
+    'ses_time_hour': null,  // NOT FOUND in spec
+    'ses_time_minute': null,  // NOT FOUND in spec
+    'ses_time_second': null,  // NOT FOUND in spec
+    'f_dlg_hi_on_time': null,  // NOT FOUND in spec
+    'f_dlg_hi_on_time_integral': null,  // NOT FOUND in spec
+    'f_dlg_runtime_current_powerup': null,  // NOT FOUND in spec
+    'f_dlg_time_bt_on': null,  // NOT FOUND in spec
+    'f_dlg_time_bt_on_integral': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_hi_on': null,  // NOT FOUND in spec
+    'sf_ha_stat_accum_time_telephone_active': null,  // NOT FOUND in spec
+    'sf_sp_stat_accum_time_output_gt_90': null,  // NOT FOUND in spec
+}
+
+// Summary: Found 5/95 parameters
+// Missing: 90 parameters

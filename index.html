@@ -11,7 +11,7 @@
     <div id="app">
       <div class="header">
         <h1>🕵️‍♀️ WSA HA Inspector</h1>
-        <p class="subtitle">Hearing Aid Health Inspection and Recommendations</p>
+                <p class="subtitle">Hearing Aid Health Inspection and Recommendations</p>
         <p class="version" style="margin: 0; padding: 0; font-size: 0.9em; color: #888; font-style: italic;">v1.1.2</p>
       </div>
       <div class="container">
@@ -20,7 +20,6 @@
             <span class="btn-icon">🎯</span>
             Pair to advertising Hearing Aid from list
           </button>
-          <script type="module" src="/src/main.mjs"></script>
         </div>
         <!-- HA Health Inspection Card -->
         <div class="device-card ha-health-card" style="display:block;width:100%;margin-bottom:32px;">
@@ -40,7 +39,7 @@
         </div>
 
         <!-- HALog Display Card -->
-        <div class="device-card ha-log-card" style="display:block;width:100%;margin-bottom:32px;">
+        <div class="device-card ha-log-card" style="display:none;width:100%;margin-bottom:32px;">
           <div class="card-header">
             <h2>📋 Hearing Aid Persistent Log (HALog)</h2>
 
@@ -83,5 +82,213 @@
             <span class="info-value" id="haLogStatus">Idle</span>
           </div>
         </div>
+
+        <!-- EEPROM Inspector Card -->
+        <div class="device-card eeprom-card" style="display:none;width:100%;margin-bottom:32px;">
+          <div class="card-header">
+            <h2>🔧 EEPROM Parameter Inspector</h2>
+
+            <!-- EEPROM Controls -->
+            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+              <button id="readEEPROMBtn" class="btn-pick-device" style="margin: 0;">
+                <span class="btn-icon">📖</span>
+                Read EEPROM Parameters
+              </button>
+            </div>
+          </div>
+          <div class="device-details" id="eepromDetailsSection" style="display:none;">
+            <div class="device-name" id="eepromDeviceName">Parameters from device...</div>
+            <div class="device-timestamp" id="eepromTimestamp">Last read: --:--:--</div>
+          </div>
+
+          <div id="eepromResults" class="parameter-container" style="display:none;"></div>
+          <div class="info-row" id="eepromStatusSection" style="display:none;">
+            <span class="info-label">Status:</span>
+            <span class="info-value" id="eepromStatus">Idle</span>
+          </div>
+        </div>
+
+        
+        <!-- Widex Charger Monitor Card -->
+        <div class="device-card charger-device">
+          <div class="card-header">
+            <h2>Widex Charger Monitor</h2>
+            <div class="polling-status" id="pollingStatus">
+              <span class="status-dot" id="pollingDot"></span>
+              <span class="status-text" id="pollingText">Polling: 5s</span>
+            </div>
+            <div class="card-top-actions" style="margin-top: 0.5em; display: flex; gap: 0.5em;">
+              <button id="connectChargerBtn" class="btn-connect">
+                <span class="btn-icon">🔌</span>
+                Connect Charger
+              </button>
+              <button id="disconnectChargerBtn" class="btn-disconnect" disabled>
+                <span class="btn-icon">🔌</span>
+                Disconnect
+              </button>
+              <button id="refreshChargerBtn" class="btn-secondary" disabled>
+                <span class="btn-icon">🔄</span>
+                Refresh Status
+              </button>
+              <button id="clearChargerErrorBtn" class="btn-secondary" disabled>
+                <span class="btn-icon">🧹</span>
+                Clear Error Log
+              </button>
+            </div>
+          </div>
+          <div class="device-details">
+            <div class="device-name" id="chargerDeviceName">No charger connected</div>
+            <div class="device-id" id="chargerDeviceId">ID: ---</div>
+            <div class="device-timestamp" id="chargerTimestamp">Last updated: --:--:--</div>
+          </div>
+          <div class="info-section">
+            <h3>🔌 Charger Information</h3>
+            <div class="info-row">
+              <span class="info-label">Firmware Version:</span>
+              <span class="info-value" id="chargerFirmware">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Hardware Version:</span>
+              <span class="info-value" id="chargerHardware">---</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Status:</span>
+              <span class="info-value" id="chargerStatus">---</span>
+            </div>
+          </div>
+          <div class="charging-slots-grid">
+            <!-- Slot 1 -->
+            <div class="charging-slot-section">
+              <h3>🔋 Charging Slot 1</h3>
+              <div class="slot-status" id="chargerSlot1Status">
+                <span class="status-badge" id="chargerSlot1StatusBadge">Empty</span>
+              </div>
+              <div class="info-row"><span class="info-label">Battery Voltage:</span><span class="info-value voltage-display" id="chargerSlot1Voltage">---</span></div>
+              <div class="info-row"><span class="info-label">Battery Current:</span><span class="info-value" id="chargerSlot1Current">---</span></div>
+              <div class="info-row"><span class="info-label">Battery Temperature:</span><span class="info-value" id="chargerSlot1Temp">---</span></div>
+              <div class="info-row"><span class="info-label">Cycle Time:</span><span class="info-value" id="chargerSlot1Cycles">---</span></div>
+              <div class="info-row"><span class="info-label">Production Date:</span><span class="info-value" id="chargerSlot1ProdDate">---</span></div>
+              <div class="info-row"><span class="info-label">IC Number:</span><span class="info-value" id="chargerSlot1IcNo">---</span></div>
+              <div class="info-row"><span class="info-label">Fast Charge:</span><span class="info-value" id="chargerSlot1FastCharge">---</span></div>
+              <div class="info-row"><span class="info-label">Normal End:</span><span class="info-value" id="chargerSlot1NormalEnd">---</span></div>
+              <div class="info-row" id="chargerSlot1RawBufferRow"><span class="info-label">Raw Buffer:</span><span class="info-value" id="chargerSlot1RawBuffer" style="font-family:monospace;font-size:0.9em;">---</span></div>
+              <div class="slot-errors" id="chargerSlot1Errors" style="display: none;">
+                <div class="error-badge-container" id="chargerSlot1ErrorBadges"></div>
+              </div>
+              
+              <!-- Charging Monitor Charts for Slot 1 -->
+              <div class="charging-monitor-section">
+                <h4>📊 Charging Monitor - Slot 1</h4>
+                <div class="monitor-charts-grid">
+                  <div class="chart-container">
+                    <canvas id="slot1VoltageChart" width="300" height="150"></canvas>
+                    <div class="chart-label">Battery Voltage (V)</div>
+                  </div>
+                  <div class="chart-container">
+                    <canvas id="slot1CurrentChart" width="300" height="150"></canvas>
+                    <div class="chart-label">Battery Current (mA)</div>
+                  </div>
+                  <div class="chart-container">
+                    <canvas id="slot1TempChart" width="300" height="150"></canvas>
+                    <div class="chart-label">Battery Temperature (°C)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Slot 2 -->
+            <div class="charging-slot-section">
+              <h3>🔋 Charging Slot 2</h3>
+              <div class="slot-status" id="chargerSlot2Status">
+                <span class="status-badge" id="chargerSlot2StatusBadge">Empty</span>
+              </div>
+              <div class="info-row"><span class="info-label">Battery Voltage:</span><span class="info-value voltage-display" id="chargerSlot2Voltage">---</span></div>
+              <div class="info-row"><span class="info-label">Battery Current:</span><span class="info-value" id="chargerSlot2Current">---</span></div>
+              <div class="info-row"><span class="info-label">Battery Temperature:</span><span class="info-value" id="chargerSlot2Temp">---</span></div>
+              <div class="info-row"><span class="info-label">Cycle Time:</span><span class="info-value" id="chargerSlot2Cycles">---</span></div>
+              <div class="info-row"><span class="info-label">Production Date:</span><span class="info-value" id="chargerSlot2ProdDate">---</span></div>
+              <div class="info-row"><span class="info-label">IC Number:</span><span class="info-value" id="chargerSlot2IcNo">---</span></div>
+              <div class="info-row"><span class="info-label">Fast Charge:</span><span class="info-value" id="chargerSlot2FastCharge">---</span></div>
+              <div class="info-row"><span class="info-label">Normal End:</span><span class="info-value" id="chargerSlot2NormalEnd">---</span></div>
+              <div class="info-row" id="chargerSlot2RawBufferRow"><span class="info-label">Raw Buffer:</span><span class="info-value" id="chargerSlot2RawBuffer" style="font-family:monospace;font-size:0.9em;">---</span></div>
+              <div class="slot-errors" id="chargerSlot2Errors" style="display: none;">
+                <div class="error-badge-container" id="chargerSlot2ErrorBadges"></div>
+              </div>
+              
+              <!-- Charging Monitor Charts for Slot 2 -->
+              <div class="charging-monitor-section">
+                <h4>📊 Charging Monitor - Slot 2</h4>
+                <div class="monitor-charts-grid">
+                  <div class="chart-container">
+                    <canvas id="slot2VoltageChart" width="300" height="150"></canvas>
+                    <div class="chart-label">Battery Voltage (V)</div>
+                  </div>
+                  <div class="chart-container">
+                    <canvas id="slot2CurrentChart" width="300" height="150"></canvas>
+                    <div class="chart-label">Battery Current (mA)</div>
+                  </div>
+                  <div class="chart-container">
+                    <canvas id="slot2TempChart" width="300" height="150"></canvas>
+                    <div class="chart-label">Battery Temperature (°C)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="log-container">
+          <h2>Activity Log</h2>
+          <div id="log" class="log-box"></div>
+        </div>
+
+        <!-- WiFi & Network Status Panel -->
+        <div id="wifiStatusPanel" class="wifi-status-panel">
+          <div class="wifi-status-header">
+            <h3>WiFi & Network Status</h3>
+            <button id="wifiStatusBtn" class="btn-primary" style="margin-left: auto;">Refresh</button>
+          </div>
+          <div class="wifi-status-content">
+            <div class="wifi-info-grid" id="wifiInfoGrid"></div>
+            <div class="wifi-sampling-section" id="wifiSamplingSection">
+              <div class="wifi-sampling-progress" id="wifiSamplingProgress"></div>
+              <div id="wifiSamplingResults"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overall Quality Panel -->
+        <div class="quality-panel">
+          <div class="quality-header">
+            <h3>Overall Quality</h3>
+          </div>
+          <div class="quality-content">
+            <div class="quality-score-display">
+              <div class="score-circle" id="qualityScoreCircle">
+                <span class="score-value" id="qualityScoreValue">--</span>
+              </div>
+              <div class="score-rating" id="qualityRating">No data</div>
+            </div>
+            <div class="quality-components">
+              <div class="component-item">
+                <span class="component-name">Latency (avg)</span>
+                <span class="component-value" id="latencyValue">--</span>
+                <span class="component-points" id="latencyPoints">0/40 pts</span>
+              </div>
+              <div class="component-item">
+                <span class="component-name">Jitter</span>
+                <span class="component-value" id="jitterValue">--</span>
+                <span class="component-points" id="jitterPoints">0/30 pts</span>
+              </div>
+              <div class="component-item">
+                <span class="component-name">Download (avg)</span>
+                <span class="component-value" id="downloadValue">--</span>
+                <span class="component-points" id="downloadPoints">0/30 pts</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.mjs"></script>
   </body>
 </html>

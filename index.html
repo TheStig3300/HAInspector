@@ -38,48 +38,71 @@
           </div>
         </div>
 
-        <!-- HALog Display Card -->
-        <div class="device-card ha-log-card" style="display:none;width:100%;margin-bottom:32px;">
+        <!-- HA Log Processor Card -->
+        <div class="device-card ha-log-card" style="display:block;width:100%;margin-bottom:32px;">
           <div class="card-header">
-            <h2>📋 Hearing Aid Persistent Log (HALog)</h2>
-
-            <!-- HALog Controls -->
-            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <button id="enableLoggingBtn" class="btn-pick-device" style="margin: 0;">
-                  <span class="btn-icon">🔧</span>
-                  Enable Logging
-                </button>
-                <select id="logLevelSelect" style="padding: 12px; border-radius: 8px; border: 2px solid #e5e7eb; font-size: 1rem; background: white; cursor: pointer;">
-                  <option value="0">NONE (Off)</option>
-                  <option value="1">FORCED</option>
-                  <option value="2">FATAL</option>
-                  <option value="3">ERROR</option>
-                  <option value="4">WARNING</option>
-                  <option value="5" selected>INFORMATION (Recommended)</option>
-                  <option value="6">DEBUG</option>
-                </select>
-              </div>
-              <button id="readHALogBtn" class="btn-pick-device" style="margin: 0;">
-                <span class="btn-icon">📋</span>
-                Read HALog from Device
+            <h2>HA Log Processor</h2>
+            <div class="card-top-actions" style="margin-top: 0.5em; display: flex; gap: 0.5em;">
+              <button id="readHaLogsBtn" class="btn-primary" disabled>
+                <span class="btn-icon">📖</span> Read Logs
+              </button>
+              <button id="submitHaLogsBtn" class="btn-secondary" disabled>
+                <span class="btn-icon">☁️</span> Submit to Cloud
               </button>
             </div>
           </div>
-          <div class="device-details" id="haLogDetailsSection" style="display:none;">
-            <div class="device-name" id="haLogDeviceName">HALog from device...</div>
-            <div class="device-id">
-              <span id="haLogFirmwareVersion">Firmware: --</span> |
-              <span id="haLogFirstId">FirstLogId: --</span> |
-              <span id="haLogDataSize">Size: -- bytes</span>
-            </div>
-            <div class="device-timestamp" id="haLogTimestamp">Last read: --:--:--</div>
+          <div class="device-details">
+            <div class="device-name" id="haLogDeviceName">No device connected</div>
+            <div class="device-id" id="haLogFirmware">Firmware: ---</div>
+            <div class="device-timestamp" id="haLogTimestamp">Last run: --:--:--</div>
           </div>
-
-          <div id="haLogResults" class="log-entries-container" style="display:none;"></div>
-          <div class="info-row" id="haLogStatusSection" style="display:none;">
-            <span class="info-label">Status:</span>
-            <span class="info-value" id="haLogStatus">Idle</span>
+          <div class="info-section">
+            <h3>Log Level</h3>
+            <div class="info-row">
+              <span class="info-label">Current Level:</span>
+              <span class="info-value" style="display:flex;align-items:center;">
+                <select id="haLogLevelSelect" disabled>
+                  <option value="0">0 - None</option>
+                  <option value="1">1 - Fatal</option>
+                  <option value="2">2 - Error</option>
+                  <option value="3">3 - Warning</option>
+                  <option value="4">4 - Information</option>
+                  <option value="5">5 - Verbose</option>
+                  <option value="6">6 - Debug</option>
+                </select>
+                <button id="writeHaLogLevelBtn" class="btn-secondary" disabled style="margin-left:8px;padding:6px 12px;">Set</button>
+              </span>
+            </div>
+          </div>
+          <div class="charging-slots-grid">
+            <div class="charging-slot-section">
+              <h3>Persistent Log</h3>
+              <div class="slot-details">
+                <div class="slot-detail-row">
+                  <span>First Log ID:</span>
+                  <span id="haLogPersistentId">---</span>
+                </div>
+                <div class="slot-detail-row">
+                  <span>Blob Size:</span>
+                  <span id="haLogPersistentSize">---</span>
+                </div>
+                <div id="haLogPersistentHex" class="ha-log-hex-display"></div>
+              </div>
+            </div>
+            <div class="charging-slot-section">
+              <h3>Event Log</h3>
+              <div class="slot-details">
+                <div class="slot-detail-row">
+                  <span>Blob Size:</span>
+                  <span id="haLogEventSize">---</span>
+                </div>
+                <div id="haLogEventHex" class="ha-log-hex-display"></div>
+              </div>
+            </div>
+          </div>
+          <div class="info-section" id="haLogCloudResults" style="display:none;">
+            <h3>Cloud Results</h3>
+            <div id="haLogCloudContent"></div>
           </div>
         </div>
 
@@ -176,24 +199,6 @@
                 <div class="error-badge-container" id="chargerSlot1ErrorBadges"></div>
               </div>
               
-              <!-- Charging Monitor Charts for Slot 1 -->
-              <div class="charging-monitor-section">
-                <h4>📊 Charging Monitor - Slot 1</h4>
-                <div class="monitor-charts-grid">
-                  <div class="chart-container">
-                    <canvas id="slot1VoltageChart" width="300" height="150"></canvas>
-                    <div class="chart-label">Battery Voltage (V)</div>
-                  </div>
-                  <div class="chart-container">
-                    <canvas id="slot1CurrentChart" width="300" height="150"></canvas>
-                    <div class="chart-label">Battery Current (mA)</div>
-                  </div>
-                  <div class="chart-container">
-                    <canvas id="slot1TempChart" width="300" height="150"></canvas>
-                    <div class="chart-label">Battery Temperature (°C)</div>
-                  </div>
-                </div>
-              </div>
             </div>
             <!-- Slot 2 -->
             <div class="charging-slot-section">
@@ -214,23 +219,46 @@
                 <div class="error-badge-container" id="chargerSlot2ErrorBadges"></div>
               </div>
               
-              <!-- Charging Monitor Charts for Slot 2 -->
-              <div class="charging-monitor-section">
-                <h4>📊 Charging Monitor - Slot 2</h4>
-                <div class="monitor-charts-grid">
-                  <div class="chart-container">
-                    <canvas id="slot2VoltageChart" width="300" height="150"></canvas>
-                    <div class="chart-label">Battery Voltage (V)</div>
-                  </div>
-                  <div class="chart-container">
-                    <canvas id="slot2CurrentChart" width="300" height="150"></canvas>
-                    <div class="chart-label">Battery Current (mA)</div>
-                  </div>
-                  <div class="chart-container">
-                    <canvas id="slot2TempChart" width="300" height="150"></canvas>
-                    <div class="chart-label">Battery Temperature (°C)</div>
-                  </div>
-                </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charging Monitor Charts Card -->
+        <div class="device-card charging-monitor-card">
+          <div class="card-header">
+            <h2>Charging Monitor</h2>
+          </div>
+          <div class="charging-monitor-section">
+            <h4>Slot 1</h4>
+            <div class="monitor-charts-grid">
+              <div class="chart-container">
+                <canvas id="slot1VoltageChart" width="300" height="150"></canvas>
+                <div class="chart-label">Battery Voltage (V)</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="slot1CurrentChart" width="300" height="150"></canvas>
+                <div class="chart-label">Battery Current (mA)</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="slot1TempChart" width="300" height="150"></canvas>
+                <div class="chart-label">Battery Temperature (°C)</div>
+              </div>
+            </div>
+          </div>
+          <div class="charging-monitor-section">
+            <h4>Slot 2</h4>
+            <div class="monitor-charts-grid">
+              <div class="chart-container">
+                <canvas id="slot2VoltageChart" width="300" height="150"></canvas>
+                <div class="chart-label">Battery Voltage (V)</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="slot2CurrentChart" width="300" height="150"></canvas>
+                <div class="chart-label">Battery Current (mA)</div>
+              </div>
+              <div class="chart-container">
+                <canvas id="slot2TempChart" width="300" height="150"></canvas>
+                <div class="chart-label">Battery Temperature (°C)</div>
               </div>
             </div>
           </div>

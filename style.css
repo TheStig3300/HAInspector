@@ -1360,9 +1360,8 @@ button {
 }
 
 /* Charger-specific styles */
-.charger-device {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 2px solid #fbbf24;
+.charging-monitor-card {
+  margin-top: 20px;
 }
 
 
@@ -2247,6 +2246,20 @@ button {
   font-size: 3rem;
   margin-bottom: 10px;
   opacity: 0.5;
+}
+
+.ha-log-hex-display {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #1a202c;
+  color: #a0aec0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+  word-break: break-all;
+  display: none;
 }
 
 /* EEPROM Parameter Display Styles */
